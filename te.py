@@ -1,19 +1,13 @@
-import csv
 import pandas as pd
 
-total_ones = 0
-row_num = 0
+# 读取CSV文件，不使用表头
+df = pd.read_csv('spikeCount.csv', header=None)
+print(df.shape)
 
-with open('false_data.csv', 'r') as file:
-    csv_reader = csv.reader(file)
+# 统计每1000行中大于15的数据个数
+count = 0
+for i in range(0, len(df), 1000):
+    subset = df[i:i+1000]  # 获取每1000行的子集
+    count += (subset > 10).sum().sum()  # 统计大于15的数据个数
 
-    for row in csv_reader:
-        row_num += 1
-        total_ones += sum(map(int, row))
-
-        if row_num % 1000 == 0:
-            print("每600行的1的总数为:", total_ones)
-            total_ones = 0
-
-if row_num % 1000 != 0:
-    print("每600行的1的总数为:", total_ones)
+print("大于15的数据个数：", count)
